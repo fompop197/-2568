@@ -1,1 +1,2724 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บริษัทรับซื้อไม้เบญจพรรณ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+        }
+        .wood-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ea580c' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .hamburger {
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-full">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div id="menuToggle" class="hamburger hidden">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <i class="fas fa-tree text-orange-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">บริษัทรับซื้อไม้เบญจพรรณ</h1>
+                        <p class="text-orange-100 text-sm">ระบบจัดการข้อมูล</p>
+                    </div>
+                </div>
+                <div id="userInfo" class="hidden">
+                    <span id="welcomeText" class="text-sm"></span>
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar fixed top-0 left-0 w-80 h-full bg-white shadow-2xl z-50">
+        <div class="gradient-bg text-white p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <i class="fas fa-tree text-orange-600 text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold">เมนูหลัก</h2>
+                        <p class="text-orange-100 text-sm">จัดการข้อมูล</p>
+                    </div>
+                </div>
+                <button id="closeSidebar" class="text-white hover:text-orange-200">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <nav class="p-4">
+            <div class="space-y-2">
+                <div class="mb-4">
+                    <h3 class="text-gray-500 text-xs uppercase font-semibold mb-2 px-3">หน้าหลัก</h3>
+                    <button onclick="showSection('dashboard')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-home text-lg"></i>
+                        <span>แดชบอร์ด</span>
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="text-gray-500 text-xs uppercase font-semibold mb-2 px-3">จัดการข้อมูล</h3>
+                    <button onclick="showSection('vehicle')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-truck text-lg"></i>
+                        <span>ทะเบียนรถ</span>
+                    </button>
+                    <button onclick="showSection('woodtype')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-tree text-lg"></i>
+                        <span>ประเภทไม้</span>
+                    </button>
+                    <button onclick="showSection('woodgrade')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-layer-group text-lg"></i>
+                        <span>ประเภทเกรดไม้</span>
+                    </button>
+                    <button onclick="showSection('time')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-clock text-lg"></i>
+                        <span>เวลาเข้าออก</span>
+                    </button>
+                    <button onclick="showSection('price')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-dollar-sign text-lg"></i>
+                        <span>ราคา</span>
+                    </button>
+                    <button onclick="showSection('weight')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-weight text-lg"></i>
+                        <span>น้ำหนัก</span>
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="text-gray-500 text-xs uppercase font-semibold mb-2 px-3">รายงาน</h3>
+                    <button onclick="showSection('summary')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-chart-bar text-lg"></i>
+                        <span>สรุปยอดรวม</span>
+                    </button>
+                    <button onclick="showSection('delivery')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-shipping-fast text-lg"></i>
+                        <span>นำส่งสินค้า</span>
+                    </button>
+                    <button onclick="showSection('outstanding')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-exclamation-triangle text-lg"></i>
+                        <span>ค้างค่าชำระ</span>
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="text-gray-500 text-xs uppercase font-semibold mb-2 px-3">บัญชี</h3>
+                    <button onclick="showSection('account')" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center space-x-3">
+                        <i class="fas fa-user-cog text-lg"></i>
+                        <span>บัญชีผู้ใช้</span>
+                    </button>
+
+                    <button onclick="logout()" class="menu-item w-full text-left px-4 py-3 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors flex items-center space-x-3 text-red-500">
+                        <i class="fas fa-sign-out-alt text-lg"></i>
+                        <span>ออกจากระบบ</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="container mx-auto px-4 py-8 max-w-md">
+        <div class="bg-white rounded-lg shadow-lg p-6 wood-pattern">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-tree text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">เข้าสู่ระบบ</h2>
+            </div>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label for="loginUsername" class="block text-gray-700 font-medium mb-2">ชื่อผู้ใช้</label>
+                    <input type="text" id="loginUsername" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="loginPassword" class="block text-gray-700 font-medium mb-2">รหัสผ่าน</label>
+                    <input type="password" id="loginPassword" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+                
+                <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                    <i class="fas fa-sign-in-alt mr-2"></i>เข้าสู่ระบบ
+                </button>
+            </form>
+            
+            <div class="text-center mt-4">
+                <button onclick="showRegisterForm()" class="block w-full text-green-600 hover:text-green-700 font-medium">
+                    ยังไม่มีบัญชี? ลงทะเบียนที่นี่
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Form -->
+    <div id="registerForm" class="container mx-auto px-4 py-8 max-w-md hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 wood-pattern">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-plus text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">ลงทะเบียน</h2>
+            </div>
+            
+            <form onsubmit="handleRegister(event)">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="firstName" class="block text-gray-700 font-medium mb-2">ชื่อจริง</label>
+                        <input type="text" id="firstName" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="lastName" class="block text-gray-700 font-medium mb-2">นามสกุล</label>
+                        <input type="text" id="lastName" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="company" class="block text-gray-700 font-medium mb-2">บริษัท</label>
+                    <input type="text" id="company" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="regUsername" class="block text-gray-700 font-medium mb-2">ชื่อผู้ใช้</label>
+                    <input type="text" id="regUsername" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="regPassword" class="block text-gray-700 font-medium mb-2">รหัสผ่าน</label>
+                    <input type="password" id="regPassword" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="confirmPassword" class="block text-gray-700 font-medium mb-2">ยืนยันรหัสผ่าน</label>
+                    <input type="password" id="confirmPassword" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+                
+                <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                    <i class="fas fa-user-plus mr-2"></i>ลงทะเบียน
+                </button>
+            </form>
+            
+            <div class="text-center mt-4">
+                <button onclick="showLoginForm()" class="text-green-600 hover:text-green-700 font-medium">
+                    มีบัญชีแล้ว? เข้าสู่ระบบ
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Dashboard -->
+        <div id="dashboardSection" class="container mx-auto px-4 py-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-truck text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">รถทั้งหมด</h3>
+                    <p id="totalVehicles" class="text-2xl font-bold text-blue-600">0</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-weight text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">น้ำหนักรวม</h3>
+                    <p id="totalWeight" class="text-2xl font-bold text-green-600">0 กก.</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-dollar-sign text-yellow-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">ยอดรวม</h3>
+                    <p id="totalAmount" class="text-2xl font-bold text-yellow-600">0 บาท</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-calendar text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">วันนี้</h3>
+                    <p id="todayDate" class="text-lg font-bold text-purple-600"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Sections -->
+        <div class="container mx-auto px-4 pb-8">
+            <!-- Vehicle Registration Section -->
+            <div id="vehicleSection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-truck mr-2"></i>ทะเบียนรถ
+                    </h2>
+                    
+                    <form onsubmit="addVehicle(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="vehiclePlate" class="block text-gray-700 font-medium mb-2">ทะเบียนรถ</label>
+                            <input type="text" id="vehiclePlate" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="vehicleType" class="block text-gray-700 font-medium mb-2">ประเภทรถ</label>
+                            <input type="text" id="vehicleType" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                <i class="fas fa-plus mr-2"></i>เพิ่มรถ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">รายการรถ</h3>
+                    <div id="vehicleList" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Wood Type Section -->
+            <div id="woodtypeSection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-tree mr-2"></i>ประเภทไม้
+                    </h2>
+                    
+                    <form onsubmit="addWoodType(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="woodTypeName" class="block text-gray-700 font-medium mb-2">ชื่อประเภทไม้</label>
+                            <input type="text" id="woodTypeName" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="woodTypeGrade" class="block text-gray-700 font-medium mb-2">เกรด</label>
+                            <select id="woodTypeGrade" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option value="">เลือกเกรด</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="woodTypeDescription" class="block text-gray-700 font-medium mb-2">รายละเอียด</label>
+                            <input type="text" id="woodTypeDescription" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="md:col-span-3">
+                            <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                <i class="fas fa-plus mr-2"></i>เพิ่มประเภทไม้
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">รายการประเภทไม้</h3>
+                    <div id="woodTypeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </div>
+
+            <!-- Wood Grade Section -->
+            <div id="woodgradeSection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-layer-group mr-2"></i>ประเภทเกรดไม้
+                    </h2>
+                    
+                    <form onsubmit="addWoodGrade(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="woodGradeName" class="block text-gray-700 font-medium mb-2">ชื่อเกรด</label>
+                            <input type="text" id="woodGradeName" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="woodGradeCode" class="block text-gray-700 font-medium mb-2">รหัสเกรด</label>
+                            <input type="text" id="woodGradeCode" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="woodGradeDescription" class="block text-gray-700 font-medium mb-2">รายละเอียด</label>
+                            <input type="text" id="woodGradeDescription" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="md:col-span-3">
+                            <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                <i class="fas fa-plus mr-2"></i>เพิ่มเกรดไม้
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">รายการเกรดไม้</h3>
+                    <div id="woodGradeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </div>
+
+            <!-- Time Section -->
+            <div id="timeSection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-clock mr-2"></i>เวลาเข้าออก
+                    </h2>
+                    
+                    <form onsubmit="addTimeRecord(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="timeVehicle" class="block text-gray-700 font-medium mb-2">เลือกรถ</label>
+                            <select id="timeVehicle" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option value="">เลือกรถ</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="timeIn" class="block text-gray-700 font-medium mb-2">เวลาเข้า</label>
+                            <input type="datetime-local" id="timeIn" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="timeOut" class="block text-gray-700 font-medium mb-2">เวลาออก</label>
+                            <input type="datetime-local" id="timeOut" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="md:col-span-3">
+                            <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                <i class="fas fa-plus mr-2"></i>บันทึกเวลา
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">บันทึกเวลา</h3>
+                    <div id="timeList" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Price Section -->
+            <div id="priceSection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-dollar-sign mr-2"></i>ราคา
+                    </h2>
+                    
+                    <form onsubmit="addPrice(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="priceVehicle" class="block text-gray-700 font-medium mb-2">เลือกรถ</label>
+                            <select id="priceVehicle" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option value="">เลือกรถ</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="pricePerKg" class="block text-gray-700 font-medium mb-2">ราคาต่อกิโลกรัม (บาท)</label>
+                            <input type="number" id="pricePerKg" step="0.01" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="priceDate" class="block text-gray-700 font-medium mb-2">วันที่</label>
+                            <input type="date" id="priceDate" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="md:col-span-3">
+                            <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                <i class="fas fa-plus mr-2"></i>บันทึกราคา
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">ประวัติราคา</h3>
+                    <div id="priceList" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Weight Section -->
+            <div id="weightSection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-weight mr-2"></i>รถเข้า รถออก
+                    </h2>
+                    
+                    <form onsubmit="addWeight(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label for="weightVehicle" class="block text-gray-700 font-medium mb-2">เลือกรถ</label>
+                            <select id="weightVehicle" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option value="">เลือกรถ</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="weightIn" class="block text-gray-700 font-medium mb-2">น้ำหนักเข้า (กก.)</label>
+                            <input type="number" id="weightIn" step="0.01" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="weightOut" class="block text-gray-700 font-medium mb-2">น้ำหนักออก (กก.)</label>
+                            <input type="number" id="weightOut" step="0.01" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="weightDate" class="block text-gray-700 font-medium mb-2">วันที่</label>
+                            <input type="date" id="weightDate" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="md:col-span-4">
+                            <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                <i class="fas fa-plus mr-2"></i>บันทึกน้ำหนัก
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">บันทึกน้ำหนัก</h3>
+                    <div id="weightList" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div id="summarySection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-chart-bar mr-2"></i>สรุปยอดรวมทั้งหมด
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-blue-50 rounded-lg p-4 text-center">
+                            <h3 class="text-lg font-semibold text-blue-800">น้ำหนักรวม</h3>
+                            <p id="summaryWeight" class="text-2xl font-bold text-blue-600">0 กก.</p>
+                        </div>
+                        
+                        <div class="bg-green-50 rounded-lg p-4 text-center">
+                            <h3 class="text-lg font-semibold text-green-800">ยอดเงินรวม</h3>
+                            <p id="summaryAmount" class="text-2xl font-bold text-green-600">0 บาท</p>
+                        </div>
+                        
+                        <div class="bg-purple-50 rounded-lg p-4 text-center">
+                            <h3 class="text-lg font-semibold text-purple-800">จำนวนรถ</h3>
+                            <p id="summaryVehicles" class="text-2xl font-bold text-purple-600">0 คัน</p>
+                        </div>
+                    </div>
+                    
+                    <div id="summaryDetails" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <!-- Delivery Section -->
+            <div id="deliverySection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-shipping-fast mr-2"></i>นำส่งสินค้า
+                    </h2>
+                    
+                    <form onsubmit="addDelivery(event)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label for="deliveryVehicle" class="block text-gray-700 font-medium mb-2">เลือกรถ</label>
+                            <select id="deliveryVehicle" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option value="">เลือกรถ</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="deliveryDestination" class="block text-gray-700 font-medium mb-2">ปลายทาง</label>
+                            <input type="text" id="deliveryDestination" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="deliveryWeight" class="block text-gray-700 font-medium mb-2">น้ำหนักส่ง (กก.)</label>
+                            <input type="number" id="deliveryWeight" step="0.01" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="deliveryDate" class="block text-gray-700 font-medium mb-2">วันที่ส่ง</label>
+                            <input type="date" id="deliveryDate" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="deliveryReceiver" class="block text-gray-700 font-medium mb-2">ผู้รับ</label>
+                            <input type="text" id="deliveryReceiver" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="deliveryPhone" class="block text-gray-700 font-medium mb-2">เบอร์โทร</label>
+                            <input type="tel" id="deliveryPhone" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="deliveryStatus" class="block text-gray-700 font-medium mb-2">สถานะ</label>
+                            <select id="deliveryStatus" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option value="">เลือกสถานะ</option>
+                                <option value="pending">รอส่ง</option>
+                                <option value="shipping">กำลังส่ง</option>
+                                <option value="delivered">ส่งแล้ว</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="deliveryNotes" class="block text-gray-700 font-medium mb-2">หมายเหตุ</label>
+                            <input type="text" id="deliveryNotes" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="lg:col-span-4">
+                            <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                <i class="fas fa-plus mr-2"></i>บันทึกการส่ง
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">รายการนำส่งสินค้า</h3>
+                    <div id="deliveryList" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <!-- Outstanding Section -->
+            <div id="outstandingSection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>ค้างค่าชำระ
+                    </h2>
+                    
+                    <form onsubmit="addOutstanding(event)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label for="outstandingVehicle" class="block text-gray-700 font-medium mb-2">เลือกรถ</label>
+                            <select id="outstandingVehicle" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                <option value="">เลือกรถ</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="outstandingAmount" class="block text-gray-700 font-medium mb-2">จำนวนเงิน (บาท)</label>
+                            <input type="number" id="outstandingAmount" step="0.01" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="outstandingDueDate" class="block text-gray-700 font-medium mb-2">วันที่ครบกำหนด</label>
+                            <input type="date" id="outstandingDueDate" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="outstandingDescription" class="block text-gray-700 font-medium mb-2">รายละเอียด</label>
+                            <input type="text" id="outstandingDescription" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="lg:col-span-4">
+                            <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                <i class="fas fa-plus mr-2"></i>เพิ่มค้างชำระ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">รายการค้างค่าชำระ</h3>
+                    <div id="outstandingList" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Account Section -->
+            <div id="accountSection" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-user-cog mr-2"></i>บัญชีผู้ใช้
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Profile Information -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">ข้อมูลส่วนตัว</h3>
+                            
+                            <form onsubmit="updateProfile(event)" class="space-y-4">
+                                <div>
+                                    <label for="profileFirstName" class="block text-gray-700 font-medium mb-2">ชื่อจริง</label>
+                                    <input type="text" id="profileFirstName" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                </div>
+                                
+                                <div>
+                                    <label for="profileLastName" class="block text-gray-700 font-medium mb-2">นามสกุล</label>
+                                    <input type="text" id="profileLastName" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                </div>
+                                
+                                <div>
+                                    <label for="profileCompany" class="block text-gray-700 font-medium mb-2">บริษัท</label>
+                                    <input type="text" id="profileCompany" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                </div>
+                                
+                                <div>
+                                    <label for="profileUsername" class="block text-gray-700 font-medium mb-2">ชื่อผู้ใช้</label>
+                                    <input type="text" id="profileUsername" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                </div>
+                                
+                                <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                                    <i class="fas fa-save mr-2"></i>บันทึกข้อมูล
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Change Password -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">เปลี่ยนรหัสผ่าน</h3>
+                            
+                            <form onsubmit="changePassword(event)" class="space-y-4">
+                                <div>
+                                    <label for="currentPassword" class="block text-gray-700 font-medium mb-2">รหัสผ่านปัจจุบัน</label>
+                                    <input type="password" id="currentPassword" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                </div>
+                                
+                                <div>
+                                    <label for="newPassword" class="block text-gray-700 font-medium mb-2">รหัสผ่านใหม่</label>
+                                    <input type="password" id="newPassword" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                </div>
+                                
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
+                                    <i class="fas fa-key mr-2"></i>เปลี่ยนรหัสผ่าน
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Developer Footer -->
+    <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <div class="mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                        <i class="fas fa-code text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">ระบบจัดการข้อมูลบริษัทรับซื้อไม้เบญจพรรณ</h3>
+                    <p class="text-gray-300 text-sm">ระบบจัดการข้อมูลที่ครบครันและใช้งานง่าย</p>
+                </div>
+                
+                <div class="border-t border-gray-700 pt-6">
+                    <div class="flex items-center justify-center space-x-3 mb-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-tie text-white text-sm"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-white font-semibold">ผู้พัฒนาระบบ</p>
+                            <p class="text-orange-400 font-bold text-lg">สมภพ พืชผล</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-center space-x-6 text-sm text-gray-400">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-calendar-alt text-orange-400"></i>
+                            <span>พัฒนาเมื่อ 2024</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-heart text-red-400"></i>
+                            <span>สร้างด้วยความใส่ใจ</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-shield-alt text-green-400"></i>
+                            <span>ปลอดภัยและเชื่อถือได้</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-700">
+                        <p class="text-xs text-gray-500">
+                            © 2024 ระบบจัดการข้อมูลบริษัทรับซื้อไม้เบญจพรรณ | พัฒนาโดย สมภพ พืชผล | สงวนลิขสิทธิ์
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('woodCompanyUsers') || '{}');
+        let currentSection = 'dashboard';
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTodayDate();
+            setDefaultDates();
+            
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('currentWoodUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            }
+        });
+
+        function updateTodayDate() {
+            const today = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            };
+            document.getElementById('todayDate').textContent = today.toLocaleDateString('th-TH', options);
+        }
+
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date().toISOString().slice(0, 16);
+            
+            document.getElementById('priceDate').value = today;
+            document.getElementById('weightDate').value = today;
+            document.getElementById('timeIn').value = now;
+            document.getElementById('deliveryDate').value = today;
+        }
+
+        // Authentication functions
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (users[username] && users[username].password === password) {
+                currentUser = users[username];
+                localStorage.setItem('currentWoodUser', JSON.stringify(currentUser));
+                showMainApp();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'เข้าสู่ระบบสำเร็จ',
+                    text: `ยินดีต้อนรับ คุณ ${currentUser.firstName} ${currentUser.lastName}`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เข้าสู่ระบบไม่สำเร็จ',
+                    text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'
+                });
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const company = document.getElementById('company').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'รหัสผ่านไม่ตรงกัน',
+                    text: 'กรุณาตรวจสอบรหัสผ่านและยืนยันรหัสผ่านให้ตรงกัน'
+                });
+                return;
+            }
+            
+            if (users[username]) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ชื่อผู้ใช้ซ้ำ',
+                    text: 'ชื่อผู้ใช้นี้มีอยู่แล้ว กรุณาเลือกชื่อผู้ใช้อื่น'
+                });
+                return;
+            }
+            
+            users[username] = {
+                firstName,
+                lastName,
+                company,
+                username,
+                password,
+                vehicles: [],
+                timeRecords: [],
+                prices: [],
+                weights: []
+            };
+            
+            localStorage.setItem('woodCompanyUsers', JSON.stringify(users));
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'ลงทะเบียนสำเร็จ',
+                text: 'คุณสามารถเข้าสู่ระบบได้แล้ว',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                document.getElementById('registerForm').reset();
+                showLoginForm();
+            });
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('adminLoginForm').classList.add('hidden');
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+
+
+        function showMainApp() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('menuToggle').classList.remove('hidden');
+            
+            document.getElementById('welcomeText').textContent = `สวัสดี คุณ ${currentUser.firstName} ${currentUser.lastName}`;
+            
+            // Setup sidebar functionality
+            setupSidebar();
+            
+            showSection('dashboard');
+            updateDashboard();
+        }
+
+        function setupSidebar() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const closeSidebar = document.getElementById('closeSidebar');
+
+            function openSidebar() {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+                menuToggle.classList.add('active');
+            }
+
+            function closeSidebarFunc() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+                menuToggle.classList.remove('active');
+            }
+
+            menuToggle.addEventListener('click', openSidebar);
+            closeSidebar.addEventListener('click', closeSidebarFunc);
+            overlay.addEventListener('click', closeSidebarFunc);
+
+            // Close sidebar when menu item is clicked
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', closeSidebarFunc);
+            });
+        }
+
+        function logout() {
+            Swal.fire({
+                title: 'ออกจากระบบ?',
+                text: 'คุณต้องการออกจากระบบหรือไม่?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ออกจากระบบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser = null;
+                    localStorage.removeItem('currentWoodUser');
+                    document.getElementById('mainApp').classList.add('hidden');
+                    document.getElementById('userInfo').classList.add('hidden');
+                    showLoginForm();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ออกจากระบบแล้ว',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        // Navigation functions
+        function showSection(section) {
+            // Hide all sections
+            const sections = ['dashboardSection', 'vehicleSection', 'woodtypeSection', 'woodgradeSection', 'timeSection', 'priceSection', 'weightSection', 'summarySection', 'deliverySection', 'outstandingSection', 'accountSection'];
+            sections.forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            
+            // Update sidebar navigation
+            document.querySelectorAll('.menu-item').forEach(btn => {
+                btn.classList.remove('text-orange-600', 'bg-orange-50');
+                btn.classList.add('text-gray-600');
+            });
+            
+            // Find and highlight current menu item
+            const currentMenuItem = document.querySelector(`.menu-item[onclick*="${section}"]`);
+            if (currentMenuItem) {
+                currentMenuItem.classList.add('text-orange-600', 'bg-orange-50');
+                currentMenuItem.classList.remove('text-gray-600');
+            }
+            
+            currentSection = section;
+            
+            // Update content based on section
+            if (section === 'dashboard') {
+                updateDashboard();
+            } else if (section === 'summary') {
+                updateSummary();
+            } else if (section === 'delivery') {
+                loadDeliveryList();
+            } else if (section === 'outstanding') {
+                loadOutstandingList();
+            } else if (section === 'account') {
+                loadAccountData();
+            }
+            
+            updateVehicleSelects();
+            updateGradeSelect();
+            loadSectionData(section);
+        }
+
+        // Vehicle management
+        function addVehicle(event) {
+            event.preventDefault();
+            
+            const plate = document.getElementById('vehiclePlate').value;
+            const type = document.getElementById('vehicleType').value;
+            
+            // Check if vehicle already exists
+            if (currentUser.vehicles.find(v => v.plate === plate)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ทะเบียนรถซ้ำ',
+                    text: 'ทะเบียนรถนี้มีอยู่แล้ว'
+                });
+                return;
+            }
+            
+            const vehicle = {
+                id: Date.now(),
+                plate,
+                type,
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser.vehicles.push(vehicle);
+            saveUserData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'เพิ่มรถสำเร็จ',
+                text: `เพิ่มรถทะเบียน ${plate} แล้ว`,
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            document.getElementById('vehiclePlate').value = '';
+            document.getElementById('vehicleType').value = '';
+            loadVehicleList();
+            updateVehicleSelects();
+            updateDashboard();
+        }
+
+        // Wood Type management
+        function addWoodType(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('woodTypeName').value;
+            const grade = document.getElementById('woodTypeGrade').value;
+            const description = document.getElementById('woodTypeDescription').value;
+            
+            // Initialize woodTypes array if not exists
+            if (!currentUser.woodTypes) {
+                currentUser.woodTypes = [];
+            }
+            
+            // Check if wood type already exists
+            if (currentUser.woodTypes.find(w => w.name === name && w.grade === grade)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ประเภทไม้ซ้ำ',
+                    text: 'ประเภทไม้และเกรดนี้มีอยู่แล้ว'
+                });
+                return;
+            }
+            
+            const woodType = {
+                id: Date.now(),
+                name,
+                grade,
+                description,
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser.woodTypes.push(woodType);
+            saveUserData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'เพิ่มประเภทไม้สำเร็จ',
+                text: `เพิ่ม ${name} เกรด ${grade} แล้ว`,
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            document.getElementById('woodTypeName').value = '';
+            document.getElementById('woodTypeGrade').value = '';
+            document.getElementById('woodTypeDescription').value = '';
+            loadWoodTypeGrid();
+        }
+
+        // Wood Grade management
+        function addWoodGrade(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('woodGradeName').value;
+            const code = document.getElementById('woodGradeCode').value;
+            const description = document.getElementById('woodGradeDescription').value;
+            
+            // Initialize woodGrades array if not exists
+            if (!currentUser.woodGrades) {
+                currentUser.woodGrades = [];
+            }
+            
+            // Check if wood grade already exists
+            if (currentUser.woodGrades.find(w => w.name === name || w.code === code)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกรดไม้ซ้ำ',
+                    text: 'ชื่อเกรดหรือรหัสเกรดนี้มีอยู่แล้ว'
+                });
+                return;
+            }
+            
+            const woodGrade = {
+                id: Date.now(),
+                name,
+                code,
+                description,
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser.woodGrades.push(woodGrade);
+            saveUserData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'เพิ่มเกรดไม้สำเร็จ',
+                text: `เพิ่มเกรด ${name} (${code}) แล้ว`,
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            document.getElementById('woodGradeName').value = '';
+            document.getElementById('woodGradeCode').value = '';
+            document.getElementById('woodGradeDescription').value = '';
+            loadWoodGradeGrid();
+            updateGradeSelect();
+        }
+
+        function loadVehicleList() {
+            const list = document.getElementById('vehicleList');
+            list.innerHTML = '';
+            
+            if (currentUser.vehicles.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-4">ยังไม่มีข้อมูลรถ</p>';
+                return;
+            }
+            
+            currentUser.vehicles.forEach(vehicle => {
+                const item = document.createElement('div');
+                item.className = 'bg-gray-50 rounded-lg p-3 flex justify-between items-center border hover:bg-gray-100 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-truck text-blue-600 text-lg"></i>
+                        <div>
+                            <div class="font-semibold text-gray-800">ทะเบียน ${vehicle.plate}</div>
+                            <div class="text-sm text-gray-600">${vehicle.type}</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-1">
+                        <button onclick="editVehicle(${vehicle.id})" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                        <button onclick="deleteVehicle(${vehicle.id})" class="p-2 text-red-600 hover:bg-red-100 rounded transition-colors">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function editVehicle(id) {
+            const vehicle = currentUser.vehicles.find(v => v.id === id);
+            if (!vehicle) return;
+            
+            Swal.fire({
+                title: 'แก้ไขข้อมูลรถ',
+                html: `
+                    <div class="text-left">
+                        <label class="block text-gray-700 font-medium mb-2">ทะเบียนรถ</label>
+                        <input id="editPlate" class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4" value="${vehicle.plate}">
+                        <label class="block text-gray-700 font-medium mb-2">ประเภทรถ</label>
+                        <input id="editType" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${vehicle.type}">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const plate = document.getElementById('editPlate').value;
+                    const type = document.getElementById('editType').value;
+                    
+                    if (!plate || !type) {
+                        Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+                        return false;
+                    }
+                    
+                    return { plate, type };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    vehicle.plate = result.value.plate;
+                    vehicle.type = result.value.type;
+                    saveUserData();
+                    loadVehicleList();
+                    updateVehicleSelects();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'แก้ไขสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteVehicle(id) {
+            Swal.fire({
+                title: 'ลบข้อมูลรถ?',
+                text: 'คุณต้องการลบข้อมูลรถนี้หรือไม่?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.vehicles = currentUser.vehicles.filter(v => v.id !== id);
+                    saveUserData();
+                    loadVehicleList();
+                    updateVehicleSelects();
+                    updateDashboard();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function loadWoodTypeGrid() {
+            const grid = document.getElementById('woodTypeGrid');
+            grid.innerHTML = '';
+            
+            if (!currentUser.woodTypes || currentUser.woodTypes.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">ยังไม่มีข้อมูลประเภทไม้</div>';
+                return;
+            }
+            
+            currentUser.woodTypes.forEach(woodType => {
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start space-x-3 flex-1">
+                            <i class="fas fa-tree text-green-600 text-lg mt-1"></i>
+                            <div>
+                                <div class="font-semibold text-gray-800">${woodType.name}</div>
+                                <div class="text-sm text-gray-600 mt-1">เกรด ${woodType.grade}</div>
+                                ${woodType.description ? `<div class="text-xs text-gray-500 mt-1">${woodType.description}</div>` : ''}
+                            </div>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="editWoodType(${woodType.id})" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                            <button onclick="deleteWoodType(${woodType.id})" class="p-2 text-red-600 hover:bg-red-100 rounded transition-colors">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function editWoodType(id) {
+            const woodType = currentUser.woodTypes.find(w => w.id === id);
+            if (!woodType) return;
+            
+            Swal.fire({
+                title: 'แก้ไขประเภทไม้',
+                html: `
+                    <div class="text-left space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">ชื่อประเภทไม้</label>
+                            <input id="editWoodName" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${woodType.name}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">เกรด</label>
+                            <input type="text" id="editWoodGrade" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${woodType.grade}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">รายละเอียด</label>
+                            <input id="editWoodDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${woodType.description || ''}">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const name = document.getElementById('editWoodName').value;
+                    const grade = document.getElementById('editWoodGrade').value;
+                    const description = document.getElementById('editWoodDescription').value;
+                    
+                    if (!name || !grade) {
+                        Swal.showValidationMessage('กรุณากรอกชื่อประเภทไม้และเกรด');
+                        return false;
+                    }
+                    
+                    return { name, grade, description };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    woodType.name = result.value.name;
+                    woodType.grade = result.value.grade;
+                    woodType.description = result.value.description;
+                    saveUserData();
+                    loadWoodTypeGrid();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'แก้ไขสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteWoodType(id) {
+            Swal.fire({
+                title: 'ลบประเภทไม้?',
+                text: 'คุณต้องการลบประเภทไม้นี้หรือไม่?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.woodTypes = currentUser.woodTypes.filter(w => w.id !== id);
+                    saveUserData();
+                    loadWoodTypeGrid();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function loadWoodGradeGrid() {
+            const grid = document.getElementById('woodGradeGrid');
+            grid.innerHTML = '';
+            
+            if (!currentUser.woodGrades || currentUser.woodGrades.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">ยังไม่มีข้อมูลเกรดไม้</div>';
+                return;
+            }
+            
+            currentUser.woodGrades.forEach(woodGrade => {
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start space-x-3 flex-1">
+                            <i class="fas fa-layer-group text-purple-600 text-lg mt-1"></i>
+                            <div>
+                                <div class="font-semibold text-gray-800">เกรด ${woodGrade.name}</div>
+                                <div class="text-sm text-gray-600 mt-1">รหัส ${woodGrade.code}</div>
+                                ${woodGrade.description ? `<div class="text-xs text-gray-500 mt-1">${woodGrade.description}</div>` : ''}
+                            </div>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="editWoodGrade(${woodGrade.id})" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                            <button onclick="deleteWoodGrade(${woodGrade.id})" class="p-2 text-red-600 hover:bg-red-100 rounded transition-colors">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function editWoodGrade(id) {
+            const woodGrade = currentUser.woodGrades.find(w => w.id === id);
+            if (!woodGrade) return;
+            
+            Swal.fire({
+                title: 'แก้ไขเกรดไม้',
+                html: `
+                    <div class="text-left space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">ชื่อเกรด</label>
+                            <input id="editGradeName" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${woodGrade.name}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">รหัสเกรด</label>
+                            <input id="editGradeCode" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${woodGrade.code}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">รายละเอียด</label>
+                            <input id="editGradeDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${woodGrade.description || ''}">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const name = document.getElementById('editGradeName').value;
+                    const code = document.getElementById('editGradeCode').value;
+                    const description = document.getElementById('editGradeDescription').value;
+                    
+                    if (!name || !code) {
+                        Swal.showValidationMessage('กรุณากรอกชื่อเกรดและรหัสเกรด');
+                        return false;
+                    }
+                    
+                    return { name, code, description };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    woodGrade.name = result.value.name;
+                    woodGrade.code = result.value.code;
+                    woodGrade.description = result.value.description;
+                    saveUserData();
+                    loadWoodGradeGrid();
+                    updateGradeSelect();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'แก้ไขสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteWoodGrade(id) {
+            Swal.fire({
+                title: 'ลบเกรดไม้?',
+                text: 'คุณต้องการลบเกรดไม้นี้หรือไม่?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.woodGrades = currentUser.woodGrades.filter(w => w.id !== id);
+                    saveUserData();
+                    loadWoodGradeGrid();
+                    updateGradeSelect();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        // Time management
+        function addTimeRecord(event) {
+            event.preventDefault();
+            
+            const vehicleId = parseInt(document.getElementById('timeVehicle').value);
+            const timeIn = document.getElementById('timeIn').value;
+            const timeOut = document.getElementById('timeOut').value;
+            
+            const vehicle = currentUser.vehicles.find(v => v.id === vehicleId);
+            if (!vehicle) return;
+            
+            const record = {
+                id: Date.now(),
+                vehicleId,
+                vehiclePlate: vehicle.plate,
+                timeIn,
+                timeOut,
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser.timeRecords.push(record);
+            saveUserData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกเวลาสำเร็จ',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            document.getElementById('timeVehicle').value = '';
+            document.getElementById('timeIn').value = new Date().toISOString().slice(0, 16);
+            document.getElementById('timeOut').value = '';
+            loadTimeList();
+        }
+
+        function loadTimeList() {
+            const list = document.getElementById('timeList');
+            list.innerHTML = '';
+            
+            if (currentUser.timeRecords.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-4">ยังไม่มีบันทึกเวลา</p>';
+                return;
+            }
+            
+            currentUser.timeRecords.forEach(record => {
+                const timeIn = new Date(record.timeIn).toLocaleString('th-TH', {
+                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                });
+                const timeOut = record.timeOut ? new Date(record.timeOut).toLocaleString('th-TH', {
+                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                }) : 'ยังไม่ออก';
+                
+                const item = document.createElement('div');
+                item.className = 'bg-gray-50 rounded-lg p-3 flex justify-between items-center border hover:bg-gray-100 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-clock text-green-600 text-lg"></i>
+                        <div>
+                            <div class="font-semibold text-gray-800">ทะเบียน ${record.vehiclePlate}</div>
+                            <div class="text-sm text-gray-600">เข้า ${timeIn}</div>
+                            <div class="text-sm text-gray-600">ออก ${timeOut}</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-1">
+                        <button onclick="editTimeRecord(${record.id})" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                        <button onclick="deleteTimeRecord(${record.id})" class="p-2 text-red-600 hover:bg-red-100 rounded transition-colors">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function editTimeRecord(id) {
+            const record = currentUser.timeRecords.find(r => r.id === id);
+            if (!record) return;
+            
+            Swal.fire({
+                title: 'แก้ไขบันทึกเวลา',
+                html: `
+                    <div class="text-left">
+                        <label class="block text-gray-700 font-medium mb-2">เวลาเข้า</label>
+                        <input type="datetime-local" id="editTimeIn" class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4" value="${record.timeIn}">
+                        <label class="block text-gray-700 font-medium mb-2">เวลาออก</label>
+                        <input type="datetime-local" id="editTimeOut" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${record.timeOut || ''}">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const timeIn = document.getElementById('editTimeIn').value;
+                    const timeOut = document.getElementById('editTimeOut').value;
+                    
+                    if (!timeIn) {
+                        Swal.showValidationMessage('กรุณากรอกเวลาเข้า');
+                        return false;
+                    }
+                    
+                    return { timeIn, timeOut };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    record.timeIn = result.value.timeIn;
+                    record.timeOut = result.value.timeOut;
+                    saveUserData();
+                    loadTimeList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'แก้ไขสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteTimeRecord(id) {
+            Swal.fire({
+                title: 'ลบบันทึกเวลา?',
+                text: 'คุณต้องการลบบันทึกเวลานี้หรือไม่?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.timeRecords = currentUser.timeRecords.filter(r => r.id !== id);
+                    saveUserData();
+                    loadTimeList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        // Price management
+        function addPrice(event) {
+            event.preventDefault();
+            
+            const vehicleId = parseInt(document.getElementById('priceVehicle').value);
+            const pricePerKg = parseFloat(document.getElementById('pricePerKg').value);
+            const date = document.getElementById('priceDate').value;
+            
+            const vehicle = currentUser.vehicles.find(v => v.id === vehicleId);
+            if (!vehicle) return;
+            
+            const price = {
+                id: Date.now(),
+                vehicleId,
+                vehiclePlate: vehicle.plate,
+                pricePerKg,
+                date,
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser.prices.push(price);
+            saveUserData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกราคาสำเร็จ',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            document.getElementById('priceVehicle').value = '';
+            document.getElementById('pricePerKg').value = '';
+            document.getElementById('priceDate').value = new Date().toISOString().split('T')[0];
+            loadPriceList();
+        }
+
+        function loadPriceList() {
+            const list = document.getElementById('priceList');
+            list.innerHTML = '';
+            
+            if (currentUser.prices.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-4">ยังไม่มีข้อมูลราคา</p>';
+                return;
+            }
+            
+            currentUser.prices.forEach(price => {
+                const date = new Date(price.date).toLocaleDateString('th-TH', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+                
+                const item = document.createElement('div');
+                item.className = 'bg-gray-50 rounded-lg p-3 flex justify-between items-center border hover:bg-gray-100 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-dollar-sign text-yellow-600 text-lg"></i>
+                        <div>
+                            <div class="font-semibold text-gray-800">ทะเบียน ${price.vehiclePlate}</div>
+                            <div class="text-sm text-green-600 font-medium">${price.pricePerKg.toLocaleString()} บาท/กก.</div>
+                            <div class="text-xs text-gray-500">${date}</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-1">
+                        <button onclick="editPrice(${price.id})" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                        <button onclick="deletePrice(${price.id})" class="p-2 text-red-600 hover:bg-red-100 rounded transition-colors">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function editPrice(id) {
+            const price = currentUser.prices.find(p => p.id === id);
+            if (!price) return;
+            
+            Swal.fire({
+                title: 'แก้ไขราคา',
+                html: `
+                    <div class="text-left">
+                        <label class="block text-gray-700 font-medium mb-2">ราคาต่อกิโลกรัม (บาท)</label>
+                        <input type="number" step="0.01" id="editPrice" class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4" value="${price.pricePerKg}">
+                        <label class="block text-gray-700 font-medium mb-2">วันที่</label>
+                        <input type="date" id="editPriceDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${price.date}">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const pricePerKg = parseFloat(document.getElementById('editPrice').value);
+                    const date = document.getElementById('editPriceDate').value;
+                    
+                    if (!pricePerKg || !date) {
+                        Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+                        return false;
+                    }
+                    
+                    return { pricePerKg, date };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    price.pricePerKg = result.value.pricePerKg;
+                    price.date = result.value.date;
+                    saveUserData();
+                    loadPriceList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'แก้ไขสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deletePrice(id) {
+            Swal.fire({
+                title: 'ลบข้อมูลราคา?',
+                text: 'คุณต้องการลบข้อมูลราคานี้หรือไม่?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.prices = currentUser.prices.filter(p => p.id !== id);
+                    saveUserData();
+                    loadPriceList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        // Weight management
+        function addWeight(event) {
+            event.preventDefault();
+            
+            const vehicleId = parseInt(document.getElementById('weightVehicle').value);
+            const weightIn = parseFloat(document.getElementById('weightIn').value);
+            const weightOut = parseFloat(document.getElementById('weightOut').value);
+            const date = document.getElementById('weightDate').value;
+            
+            const vehicle = currentUser.vehicles.find(v => v.id === vehicleId);
+            if (!vehicle) return;
+            
+            const netWeight = weightIn - weightOut;
+            
+            const weight = {
+                id: Date.now(),
+                vehicleId,
+                vehiclePlate: vehicle.plate,
+                weightIn,
+                weightOut,
+                netWeight,
+                date,
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser.weights.push(weight);
+            saveUserData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกน้ำหนักสำเร็จ',
+                text: `น้ำหนักสุทธิ: ${netWeight.toLocaleString()} กก.`,
+                timer: 2000,
+                showConfirmButton: false
+            });
+            
+            document.getElementById('weightVehicle').value = '';
+            document.getElementById('weightIn').value = '';
+            document.getElementById('weightOut').value = '';
+            document.getElementById('weightDate').value = new Date().toISOString().split('T')[0];
+            loadWeightList();
+            updateDashboard();
+        }
+
+        function loadWeightList() {
+            const list = document.getElementById('weightList');
+            list.innerHTML = '';
+            
+            if (currentUser.weights.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-4">ยังไม่มีข้อมูลน้ำหนัก</p>';
+                return;
+            }
+            
+            currentUser.weights.forEach(weight => {
+                const date = new Date(weight.date).toLocaleDateString('th-TH', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+                
+                const item = document.createElement('div');
+                item.className = 'bg-gray-50 rounded-lg p-3 flex justify-between items-center border hover:bg-gray-100 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-weight text-purple-600 text-lg"></i>
+                        <div>
+                            <div class="font-semibold text-gray-800">ทะเบียน ${weight.vehiclePlate}</div>
+                            <div class="text-sm text-gray-600">น้ำหนักเข้า ${weight.weightIn.toLocaleString()} กก. - ออก ${weight.weightOut.toLocaleString()} กก.</div>
+                            <div class="text-sm font-medium text-green-600">น้ำหนักสุทธิ ${weight.netWeight.toLocaleString()} กก.</div>
+                            <div class="text-xs text-gray-500">${date}</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-1">
+                        <button onclick="editWeight(${weight.id})" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                        <button onclick="deleteWeight(${weight.id})" class="p-2 text-red-600 hover:bg-red-100 rounded transition-colors">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function editWeight(id) {
+            const weight = currentUser.weights.find(w => w.id === id);
+            if (!weight) return;
+            
+            Swal.fire({
+                title: 'แก้ไขน้ำหนัก',
+                html: `
+                    <div class="text-left">
+                        <label class="block text-gray-700 font-medium mb-2">น้ำหนักเข้า (กก.)</label>
+                        <input type="number" step="0.01" id="editWeightIn" class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4" value="${weight.weightIn}">
+                        <label class="block text-gray-700 font-medium mb-2">น้ำหนักออก (กก.)</label>
+                        <input type="number" step="0.01" id="editWeightOut" class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4" value="${weight.weightOut}">
+                        <label class="block text-gray-700 font-medium mb-2">วันที่</label>
+                        <input type="date" id="editWeightDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${weight.date}">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const weightIn = parseFloat(document.getElementById('editWeightIn').value);
+                    const weightOut = parseFloat(document.getElementById('editWeightOut').value);
+                    const date = document.getElementById('editWeightDate').value;
+                    
+                    if (!weightIn || !weightOut || !date) {
+                        Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+                        return false;
+                    }
+                    
+                    return { weightIn, weightOut, date };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    weight.weightIn = result.value.weightIn;
+                    weight.weightOut = result.value.weightOut;
+                    weight.netWeight = result.value.weightIn - result.value.weightOut;
+                    weight.date = result.value.date;
+                    saveUserData();
+                    loadWeightList();
+                    updateDashboard();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'แก้ไขสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteWeight(id) {
+            Swal.fire({
+                title: 'ลบข้อมูลน้ำหนัก?',
+                text: 'คุณต้องการลบข้อมูลน้ำหนักนี้หรือไม่?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.weights = currentUser.weights.filter(w => w.id !== id);
+                    saveUserData();
+                    loadWeightList();
+                    updateDashboard();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        // Dashboard and summary functions
+        function updateDashboard() {
+            if (!currentUser) return;
+            
+            const totalVehicles = currentUser.vehicles.length;
+            const totalWeight = currentUser.weights.reduce((sum, w) => sum + w.netWeight, 0);
+            const totalAmount = calculateTotalAmount();
+            
+            document.getElementById('totalVehicles').textContent = totalVehicles;
+            document.getElementById('totalWeight').textContent = totalWeight.toLocaleString() + ' กก.';
+            document.getElementById('totalAmount').textContent = totalAmount.toLocaleString() + ' บาท';
+        }
+
+        function calculateTotalAmount() {
+            let total = 0;
+            
+            currentUser.weights.forEach(weight => {
+                const price = currentUser.prices.find(p => 
+                    p.vehicleId === weight.vehicleId && 
+                    p.date <= weight.date
+                );
+                
+                if (price) {
+                    total += weight.netWeight * price.pricePerKg;
+                }
+            });
+            
+            return total;
+        }
+
+        function updateSummary() {
+            const totalWeight = currentUser.weights.reduce((sum, w) => sum + w.netWeight, 0);
+            const totalAmount = calculateTotalAmount();
+            const totalVehicles = currentUser.vehicles.length;
+            
+            document.getElementById('summaryWeight').textContent = totalWeight.toLocaleString() + ' กก.';
+            document.getElementById('summaryAmount').textContent = totalAmount.toLocaleString() + ' บาท';
+            document.getElementById('summaryVehicles').textContent = totalVehicles + ' คัน';
+            
+            // Show detailed summary
+            const details = document.getElementById('summaryDetails');
+            details.innerHTML = '';
+            
+            const vehicleSummary = {};
+            
+            currentUser.weights.forEach(weight => {
+                if (!vehicleSummary[weight.vehiclePlate]) {
+                    vehicleSummary[weight.vehiclePlate] = {
+                        totalWeight: 0,
+                        totalAmount: 0,
+                        trips: 0
+                    };
+                }
+                
+                vehicleSummary[weight.vehiclePlate].totalWeight += weight.netWeight;
+                vehicleSummary[weight.vehiclePlate].trips += 1;
+                
+                const price = currentUser.prices.find(p => 
+                    p.vehicleId === weight.vehicleId && 
+                    p.date <= weight.date
+                );
+                
+                if (price) {
+                    vehicleSummary[weight.vehiclePlate].totalAmount += weight.netWeight * price.pricePerKg;
+                }
+            });
+            
+            Object.entries(vehicleSummary).forEach(([plate, summary]) => {
+                const item = document.createElement('div');
+                item.className = 'bg-white border rounded-lg p-4 hover:bg-gray-50 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3 mb-3">
+                        <i class="fas fa-truck text-blue-600 text-lg"></i>
+                        <h3 class="font-semibold text-gray-800">ทะเบียน ${plate}</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-blue-50 rounded-lg p-3 text-center">
+                            <p class="text-gray-600 text-xs">น้ำหนักรวม</p>
+                            <p class="font-semibold text-blue-600 text-lg">${summary.totalWeight.toLocaleString()}</p>
+                            <p class="text-gray-500 text-xs">กิโลกรัม</p>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-3 text-center">
+                            <p class="text-gray-600 text-xs">ยอดเงินรวม</p>
+                            <p class="font-semibold text-green-600 text-lg">${summary.totalAmount.toLocaleString()}</p>
+                            <p class="text-gray-500 text-xs">บาท</p>
+                        </div>
+                        <div class="bg-purple-50 rounded-lg p-3 text-center">
+                            <p class="text-gray-600 text-xs">จำนวนเที่ยว</p>
+                            <p class="font-semibold text-purple-600 text-lg">${summary.trips}</p>
+                            <p class="text-gray-500 text-xs">เที่ยว</p>
+                        </div>
+                    </div>
+                `;
+                details.appendChild(item);
+            });
+        }
+
+        // Delivery management
+        function addDelivery(event) {
+            event.preventDefault();
+            
+            const vehicleId = parseInt(document.getElementById('deliveryVehicle').value);
+            const destination = document.getElementById('deliveryDestination').value;
+            const weight = parseFloat(document.getElementById('deliveryWeight').value);
+            const date = document.getElementById('deliveryDate').value;
+            const receiver = document.getElementById('deliveryReceiver').value;
+            const phone = document.getElementById('deliveryPhone').value;
+            const status = document.getElementById('deliveryStatus').value;
+            const notes = document.getElementById('deliveryNotes').value;
+            
+            const vehicle = currentUser.vehicles.find(v => v.id === vehicleId);
+            if (!vehicle) return;
+            
+            if (!currentUser.deliveries) {
+                currentUser.deliveries = [];
+            }
+            
+            const delivery = {
+                id: Date.now(),
+                vehicleId,
+                vehiclePlate: vehicle.plate,
+                destination,
+                weight,
+                date,
+                receiver,
+                phone,
+                status,
+                notes,
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser.deliveries.push(delivery);
+            saveUserData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกการส่งสำเร็จ',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            // Reset form
+            document.getElementById('deliveryVehicle').value = '';
+            document.getElementById('deliveryDestination').value = '';
+            document.getElementById('deliveryWeight').value = '';
+            document.getElementById('deliveryDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('deliveryReceiver').value = '';
+            document.getElementById('deliveryPhone').value = '';
+            document.getElementById('deliveryStatus').value = '';
+            document.getElementById('deliveryNotes').value = '';
+            
+            loadDeliveryList();
+        }
+
+        function loadDeliveryList() {
+            const list = document.getElementById('deliveryList');
+            list.innerHTML = '';
+            
+            if (!currentUser.deliveries || currentUser.deliveries.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-8">ยังไม่มีข้อมูลการนำส่ง</p>';
+                return;
+            }
+            
+            currentUser.deliveries.forEach(delivery => {
+                const statusColor = {
+                    'pending': 'bg-yellow-100 text-yellow-800',
+                    'shipping': 'bg-blue-100 text-blue-800',
+                    'delivered': 'bg-green-100 text-green-800'
+                };
+                const statusText = {
+                    'pending': 'รอส่ง',
+                    'shipping': 'กำลังส่ง',
+                    'delivered': 'ส่งแล้ว'
+                };
+                
+                const date = new Date(delivery.date).toLocaleDateString('th-TH', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+                
+                const item = document.createElement('div');
+                item.className = 'bg-white border rounded-lg p-4 hover:bg-gray-50 transition-colors';
+                item.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start space-x-3 flex-1">
+                            <i class="fas fa-shipping-fast text-orange-600 text-lg mt-1"></i>
+                            <div>
+                                <div class="font-semibold text-gray-800">ทะเบียน ${delivery.vehiclePlate} → ${delivery.destination}</div>
+                                <div class="text-sm text-gray-600 mt-1">น้ำหนัก ${delivery.weight.toLocaleString()} กก.</div>
+                                <div class="text-sm text-gray-600">ผู้รับ ${delivery.receiver} (${delivery.phone})</div>
+                                <div class="text-xs text-gray-500 mt-1">${date}</div>
+                                ${delivery.notes ? `<div class="text-xs text-gray-500 mt-1">หมายเหตุ: ${delivery.notes}</div>` : ''}
+                                <div class="mt-2">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColor[delivery.status]}">${statusText[delivery.status]}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="editDelivery(${delivery.id})" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                            <button onclick="deleteDelivery(${delivery.id})" class="p-2 text-red-600 hover:bg-red-100 rounded transition-colors">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function editDelivery(id) {
+            const delivery = currentUser.deliveries.find(d => d.id === id);
+            if (!delivery) return;
+            
+            Swal.fire({
+                title: 'แก้ไขการส่งสินค้า',
+                html: `
+                    <div class="text-left space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">ปลายทาง</label>
+                            <input id="editDestination" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${delivery.destination}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">น้ำหนัก (กก.)</label>
+                            <input type="number" step="0.01" id="editDeliveryWeight" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${delivery.weight}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">ผู้รับ</label>
+                            <input id="editReceiver" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${delivery.receiver}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">เบอร์โทร</label>
+                            <input id="editPhone" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${delivery.phone}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">สถานะ</label>
+                            <select id="editDeliveryStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                <option value="pending" ${delivery.status === 'pending' ? 'selected' : ''}>รอส่ง</option>
+                                <option value="shipping" ${delivery.status === 'shipping' ? 'selected' : ''}>กำลังส่ง</option>
+                                <option value="delivered" ${delivery.status === 'delivered' ? 'selected' : ''}>ส่งแล้ว</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">หมายเหตุ</label>
+                            <input id="editNotes" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${delivery.notes || ''}">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const destination = document.getElementById('editDestination').value;
+                    const weight = parseFloat(document.getElementById('editDeliveryWeight').value);
+                    const receiver = document.getElementById('editReceiver').value;
+                    const phone = document.getElementById('editPhone').value;
+                    const status = document.getElementById('editDeliveryStatus').value;
+                    const notes = document.getElementById('editNotes').value;
+                    
+                    if (!destination || !weight || !receiver || !phone || !status) {
+                        Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+                        return false;
+                    }
+                    
+                    return { destination, weight, receiver, phone, status, notes };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    delivery.destination = result.value.destination;
+                    delivery.weight = result.value.weight;
+                    delivery.receiver = result.value.receiver;
+                    delivery.phone = result.value.phone;
+                    delivery.status = result.value.status;
+                    delivery.notes = result.value.notes;
+                    saveUserData();
+                    loadDeliveryList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'แก้ไขสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteDelivery(id) {
+            Swal.fire({
+                title: 'ลบข้อมูลการส่ง?',
+                text: 'คุณต้องการลบข้อมูลการส่งสินค้านี้หรือไม่?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.deliveries = currentUser.deliveries.filter(d => d.id !== id);
+                    saveUserData();
+                    loadDeliveryList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        // Account management
+        function loadAccountData() {
+            document.getElementById('profileFirstName').value = currentUser.firstName;
+            document.getElementById('profileLastName').value = currentUser.lastName;
+            document.getElementById('profileCompany').value = currentUser.company;
+            document.getElementById('profileUsername').value = currentUser.username;
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('profileFirstName').value;
+            const lastName = document.getElementById('profileLastName').value;
+            const company = document.getElementById('profileCompany').value;
+            const username = document.getElementById('profileUsername').value;
+            
+            // Check if username is changed and already exists
+            if (username !== currentUser.username && users[username]) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ชื่อผู้ใช้ซ้ำ',
+                    text: 'ชื่อผู้ใช้นี้มีอยู่แล้ว กรุณาเลือกชื่อผู้ใช้อื่น'
+                });
+                return;
+            }
+            
+            // If username changed, update the users object
+            if (username !== currentUser.username) {
+                delete users[currentUser.username];
+                currentUser.username = username;
+            }
+            
+            currentUser.firstName = firstName;
+            currentUser.lastName = lastName;
+            currentUser.company = company;
+            
+            saveUserData();
+            
+            // Update welcome text
+            document.getElementById('welcomeText').textContent = `สวัสดี คุณ ${firstName} ${lastName}`;
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'อัปเดตข้อมูลสำเร็จ',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+
+        function changePassword(event) {
+            event.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            
+            if (currentPassword !== currentUser.password) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'รหัสผ่านไม่ถูกต้อง',
+                    text: 'รหัสผ่านปัจจุบันไม่ถูกต้อง'
+                });
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'รหัสผ่านสั้นเกินไป',
+                    text: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'
+                });
+                return;
+            }
+            
+            currentUser.password = newPassword;
+            saveUserData();
+            
+            // Clear form
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'เปลี่ยนรหัสผ่านสำเร็จ',
+                text: 'รหัสผ่านของคุณได้รับการอัปเดตแล้ว',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        // Outstanding payment management
+        function addOutstanding(event) {
+            event.preventDefault();
+            
+            const vehicleId = parseInt(document.getElementById('outstandingVehicle').value);
+            const amount = parseFloat(document.getElementById('outstandingAmount').value);
+            const dueDate = document.getElementById('outstandingDueDate').value;
+            const description = document.getElementById('outstandingDescription').value;
+            
+            const vehicle = currentUser.vehicles.find(v => v.id === vehicleId);
+            if (!vehicle) return;
+            
+            if (!currentUser.outstandings) {
+                currentUser.outstandings = [];
+            }
+            
+            const outstanding = {
+                id: Date.now(),
+                vehicleId,
+                vehiclePlate: vehicle.plate,
+                amount,
+                dueDate,
+                description,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            
+            currentUser.outstandings.push(outstanding);
+            saveUserData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'เพิ่มค้างชำระสำเร็จ',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            // Reset form
+            document.getElementById('outstandingVehicle').value = '';
+            document.getElementById('outstandingAmount').value = '';
+            document.getElementById('outstandingDueDate').value = '';
+            document.getElementById('outstandingDescription').value = '';
+            
+            loadOutstandingList();
+        }
+
+        function loadOutstandingList() {
+            const list = document.getElementById('outstandingList');
+            list.innerHTML = '';
+            
+            if (!currentUser.outstandings || currentUser.outstandings.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-4">ยังไม่มีข้อมูลค้างชำระ</p>';
+                return;
+            }
+            
+            currentUser.outstandings.forEach(outstanding => {
+                const dueDate = new Date(outstanding.dueDate);
+                const today = new Date();
+                const isOverdue = dueDate < today && outstanding.status === 'pending';
+                const dueDateStr = dueDate.toLocaleDateString('th-TH', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+                
+                const item = document.createElement('div');
+                item.className = `bg-gray-50 rounded-lg p-3 flex justify-between items-center border hover:bg-gray-100 transition-colors ${isOverdue ? 'border-red-300 bg-red-50' : ''}`;
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-exclamation-triangle ${isOverdue ? 'text-red-600' : 'text-yellow-600'} text-lg"></i>
+                        <div>
+                            <div class="font-semibold text-gray-800">ทะเบียน ${outstanding.vehiclePlate}</div>
+                            <div class="text-sm font-medium text-red-600">${outstanding.amount.toLocaleString()} บาท</div>
+                            <div class="text-sm text-gray-600">${outstanding.description}</div>
+                            <div class="text-xs ${isOverdue ? 'text-red-600 font-medium' : 'text-gray-500'}">ครบกำหนด ${dueDateStr}</div>
+                            ${outstanding.status === 'paid' ? '<div class="mt-1"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">ชำระแล้ว</span></div>' : ''}
+                        </div>
+                    </div>
+                    <div class="flex space-x-1">
+                        ${outstanding.status === 'pending' ? `<button onclick="markAsPaid(${outstanding.id})" class="p-2 text-green-600 hover:bg-green-100 rounded transition-colors" title="ทำเครื่องหมายว่าชำระแล้ว">
+                            <i class="fas fa-check text-sm"></i>
+                        </button>` : ''}
+                        <button onclick="editOutstanding(${outstanding.id})" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                        <button onclick="deleteOutstanding(${outstanding.id})" class="p-2 text-red-600 hover:bg-red-100 rounded transition-colors">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function markAsPaid(id) {
+            const outstanding = currentUser.outstandings.find(o => o.id === id);
+            if (!outstanding) return;
+            
+            Swal.fire({
+                title: 'ทำเครื่องหมายว่าชำระแล้ว?',
+                text: `ยืนยันการชำระเงิน ${outstanding.amount.toLocaleString()} บาท สำหรับ ${outstanding.vehiclePlate}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ชำระแล้ว',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    outstanding.status = 'paid';
+                    outstanding.paidAt = new Date().toISOString();
+                    saveUserData();
+                    loadOutstandingList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกการชำระสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function editOutstanding(id) {
+            const outstanding = currentUser.outstandings.find(o => o.id === id);
+            if (!outstanding) return;
+            
+            Swal.fire({
+                title: 'แก้ไขค้างชำระ',
+                html: `
+                    <div class="text-left space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">จำนวนเงิน (บาท)</label>
+                            <input type="number" step="0.01" id="editOutstandingAmount" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${outstanding.amount}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">วันที่ครบกำหนด</label>
+                            <input type="date" id="editOutstandingDueDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${outstanding.dueDate}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">รายละเอียด</label>
+                            <input id="editOutstandingDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg" value="${outstanding.description}">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const amount = parseFloat(document.getElementById('editOutstandingAmount').value);
+                    const dueDate = document.getElementById('editOutstandingDueDate').value;
+                    const description = document.getElementById('editOutstandingDescription').value;
+                    
+                    if (!amount || !dueDate || !description) {
+                        Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+                        return false;
+                    }
+                    
+                    return { amount, dueDate, description };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    outstanding.amount = result.value.amount;
+                    outstanding.dueDate = result.value.dueDate;
+                    outstanding.description = result.value.description;
+                    saveUserData();
+                    loadOutstandingList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'แก้ไขสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        function deleteOutstanding(id) {
+            Swal.fire({
+                title: 'ลบข้อมูลค้างชำระ?',
+                text: 'คุณต้องการลบข้อมูลค้างชำระนี้หรือไม่?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.outstandings = currentUser.outstandings.filter(o => o.id !== id);
+                    saveUserData();
+                    loadOutstandingList();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+
+        // Utility functions
+        function updateVehicleSelects() {
+            const selects = ['timeVehicle', 'priceVehicle', 'weightVehicle', 'deliveryVehicle', 'outstandingVehicle'];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (!select) return;
+                
+                const currentValue = select.value;
+                
+                select.innerHTML = '<option value="">เลือกรถ</option>';
+                
+                currentUser.vehicles.forEach(vehicle => {
+                    const option = document.createElement('option');
+                    option.value = vehicle.id;
+                    option.textContent = `${vehicle.plate} ${vehicle.type}`;
+                    select.appendChild(option);
+                });
+                
+                select.value = currentValue;
+            });
+        }
+
+        function updateGradeSelect() {
+            const select = document.getElementById('woodTypeGrade');
+            if (!select) return;
+            
+            const currentValue = select.value;
+            
+            select.innerHTML = '<option value="">เลือกเกรด</option>';
+            
+            if (currentUser.woodGrades && currentUser.woodGrades.length > 0) {
+                currentUser.woodGrades.forEach(grade => {
+                    const option = document.createElement('option');
+                    option.value = grade.name;
+                    option.textContent = `${grade.name} (${grade.code})`;
+                    select.appendChild(option);
+                });
+            }
+            
+            select.value = currentValue;
+        }
+
+        function loadSectionData(section) {
+            switch(section) {
+                case 'vehicle':
+                    loadVehicleList();
+                    break;
+                case 'woodtype':
+                    loadWoodTypeGrid();
+                    break;
+                case 'woodgrade':
+                    loadWoodGradeGrid();
+                    break;
+                case 'time':
+                    loadTimeList();
+                    break;
+                case 'price':
+                    loadPriceList();
+                    break;
+                case 'weight':
+                    loadWeightList();
+                    break;
+                case 'delivery':
+                    loadDeliveryList();
+                    break;
+                case 'outstanding':
+                    loadOutstandingList();
+                    break;
+            }
+        }
+
+        function saveUserData() {
+            users[currentUser.username] = currentUser;
+            localStorage.setItem('woodCompanyUsers', JSON.stringify(users));
+            localStorage.setItem('currentWoodUser', JSON.stringify(currentUser));
+        }
+
+
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9942cdeb864e731c',t:'MTc2MTQwNjc0Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
